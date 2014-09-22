@@ -126,10 +126,15 @@
 
 - (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qualifiedName attributes:(NSDictionary *)attributeDict
 {
+    self.tmpString = [[NSMutableString alloc] init];
+    
     if ([elementName isEqualToString:@"item"] || [elementName isEqualToString:@"entry"]) {
         self.currentItem = [[RSSItem alloc] init];
         self.mediaCredits = [[NSMutableArray alloc] init];
         self.mediaThumbnails = [[NSMutableArray alloc] init];
+        
+    } else if ([elementName isEqualToString:@"enclosure"]) {
+        [self.tmpString appendString:[attributeDict objectForKey:@"url"]];
         
     } else if ([elementName isEqual:@"media:credit"]) {
         self.currentMediaCredit = [self mediaCreditFromAttributes:attributeDict];
@@ -140,8 +145,6 @@
         [self.mediaThumbnails addObject:mediaThumbnail];
         
     }
-    
-    self.tmpString = [[NSMutableString alloc] init];
 }
 
 - (RSSMediaCredit *)mediaCreditFromAttributes:(NSDictionary *)attributes
