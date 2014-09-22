@@ -11,7 +11,9 @@
 @class AFHTTPSessionManager;
 
 @interface RSSParser : NSObject <NSXMLParserDelegate>
+
 @property (nonatomic, strong) AFHTTPSessionManager *client;
+
 @property (nonatomic, strong) NSXMLParser *xmlParser;
 
 + (void)parseRSSFeedForRequest:(NSURLRequest *)urlRequest

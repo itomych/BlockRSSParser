@@ -8,14 +8,15 @@
 
 #import "RSSParser.h"
 
-#import "AFURLResponseSerialization.h"
 #import "AFHTTPSessionManager.h"
+#import "AFURLResponseSerialization.h"
 
 #import "RSSItem.h"
 #import "RSSMediaCredit.h"
 #import "RSSMediaThumbnail.h"
 
 @interface RSSParser ()
+
 @property (nonatomic, strong) RSSItem *currentItem;
 @property (nonatomic, strong) RSSMediaCredit *currentMediaCredit;
 @property (nonatomic, strong) NSMutableArray *mediaCredits;
@@ -24,6 +25,7 @@
 @property (nonatomic, strong) NSMutableString *tmpString;
 @property (nonatomic, copy) void (^successBlock)(NSArray *feedItems);
 @property (nonatomic, copy) void (^failblock)(NSError *error);
+
 @end
 
 @implementation RSSParser
@@ -122,9 +124,7 @@
 #pragma mark -
 #pragma mark NSXMLParser delegate
 
-- (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName
-  namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qualifiedName
-    attributes:(NSDictionary *)attributeDict
+- (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qualifiedName attributes:(NSDictionary *)attributeDict
 {
     if ([elementName isEqualToString:@"item"] || [elementName isEqualToString:@"entry"]) {
         self.currentItem = [[RSSItem alloc] init];
@@ -132,7 +132,6 @@
         self.mediaThumbnails = [[NSMutableArray alloc] init];
         
     } else if ([elementName isEqual:@"media:credit"]) {
-        
         self.currentMediaCredit = [self mediaCreditFromAttributes:attributeDict];
         [self.mediaCredits addObject:self.currentMediaCredit];
         
@@ -161,8 +160,7 @@
     return mediaThumbnail;
 }
 
-- (void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName
-  namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName
+- (void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName
 {    
     if ([elementName isEqualToString:@"item"] || [elementName isEqualToString:@"entry"]) {
         self.currentItem.mediaCredits = [self.mediaCredits copy];
@@ -197,9 +195,8 @@
             
         } else if ([elementName isEqualToString:@"pubDate"]) {
             NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-            NSLocale *local = [[NSLocale alloc] initWithLocaleIdentifier:@"en_EN"];
-            [formatter setLocale:local];
-            [formatter setDateFormat:@"EEE, dd MMM yyyy HH:mm:ss Z"];
+            formatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_EN"];
+            formatter.dateFormat = @"EEE, dd MMM yyyy HH:mm:ss Z";
             
             [self.currentItem setPubDate:[formatter dateFromString:self.tmpString]];
             
@@ -208,6 +205,9 @@
             
         } else if ([elementName isEqualToString:@"guid"]) {
             [self.currentItem setGuid:self.tmpString];
+            
+        } else if ([elementName isEqualToString:@"enclosure"]) {
+            [self.currentItem setEnclosure:[NSURL URLWithString:self.tmpString]];
             
         } else if ([elementName isEqualToString:@"media:title"]) {
             [self.currentItem setMediaTitle:self.tmpString];
@@ -219,6 +219,7 @@
             [self.currentMediaCredit setValue:self.tmpString];
             
         }
+        
     }
 }
 

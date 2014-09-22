@@ -72,7 +72,7 @@
         _pubDate = [aDecoder decodeObjectForKey:@"pubDate"];
         _author = [aDecoder decodeObjectForKey:@"author"];
         _guid = [aDecoder decodeObjectForKey:@"guid"];
-        
+        _enclosure = [aDecoder decodeObjectForKey:@"enclosure"];
         _mediaTitle = [aDecoder decodeObjectForKey:@"mediaTitle"];
         _mediaDescription = [aDecoder decodeObjectForKey:@"mediaDescription"];
         _mediaCredits = [aDecoder decodeObjectForKey:@"mediaCredits"];
@@ -93,7 +93,7 @@
     [aCoder encodeObject:self.pubDate forKey:@"pubDate"];
     [aCoder encodeObject:self.author forKey:@"author"];
     [aCoder encodeObject:self.guid forKey:@"guid"];
-    
+    [aCoder encodeObject:self.enclosure forKey:@"enclosure"];
     [aCoder encodeObject:self.mediaTitle forKey:@"mediaTitle"];
     [aCoder encodeObject:self.mediaDescription forKey:@"mediaDescription"];
     [aCoder encodeObject:self.mediaCredits forKey:@"mediaCredits"];
